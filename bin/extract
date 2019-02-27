@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+# Exit, if return non-zero or use an undefined variable.
+set -eu
+
+pwd=$PWD
+
+cd "$(dirname "$0")/.."
+
+# Variables
+filename="$1"
+target="$2"
+
+basename="$(basename $filename)"
+dirname="$(dirname $filename)"
+mkdir -p "$dirname"
+cd "$dirname"
+if echo "$basename" | egrep -q "\.zip$"; then
+	base=$(basename -s ".zip" "$basename")
+	temp="$base-temp"
+	mkdir -p "$base" "$temp"
+	count="$(unzip -l "$basename" | wc -l)"
+	unzip -o "$basename" -d "$temp" | awk "{printf \"%s/$count\\t%s\\r\", FNR, \$0 } "
+	rm -rf $base/*
+	mv "$temp"/*/* "$base/"
+elif echo "$basename" | egrep -q "\.tar\.gz$"; then
+	base=$(basename -s ".tar.gz" "$basename")
+	mkdir -p "$base"
+	tar -zxvf "$basename" -C "$base" --strip-components=1
+elif echo "$basename" | egrep -q "\.tar\.xz$"; then
+	base=$(basename -s ".tar.xz" "$basename")
+	mkdir -p "$base"
+	tar -Jxvf "$basename" -C "$base" --strip-components=1
+fi
+
+cd "$pwd"
+rm -rf "$target"
+mkdir -p "$(dirname "$target")"
+mv "$dirname/$base" "$target"

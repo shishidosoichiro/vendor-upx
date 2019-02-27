@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+# Exit, if return non-zero or use an undefined variable.
+set -eu
+
+cd "$(dirname "$0")/.."
+
+# Start
+cd versions
+ls -1
