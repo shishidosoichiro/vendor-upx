@@ -10,7 +10,7 @@ url="$1"
 
 mkdir -p temp
 cd temp
-if which wget 2> /dev/null; then
+if which wget &> /dev/null; then
 	wget "$url"
 else
 	curl --progress-bar --show-error --location "$url" --output "$(basename $url)" > /dev/null
