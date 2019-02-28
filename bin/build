@@ -48,3 +48,4 @@ patch -p1 < "$(basename $url)"
 patch -p1 < ../../bin/omit-fno-delete-null-pointer-checks.patch
 
 make all
+cp -pr src/upx.out upx
